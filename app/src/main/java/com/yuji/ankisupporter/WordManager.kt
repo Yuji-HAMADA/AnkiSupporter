@@ -48,10 +48,6 @@ object WordManager {
         recorder = null
     }
 
-    fun init(context: Context) {
-
-    }
-
     private fun startPlaying() {
         player = MediaPlayer().apply {
             try {
@@ -89,5 +85,12 @@ object WordManager {
             stopPlaying()
         }
         mStartPlaying = !mStartPlaying
+    }
+
+    fun onStop() {
+        recorder?.release()
+        recorder = null
+        player?.release()
+        player = null
     }
 }
