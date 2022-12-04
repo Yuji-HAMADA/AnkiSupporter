@@ -64,6 +64,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        WordManager.onStop()
+    }
 }
 
 @Composable
