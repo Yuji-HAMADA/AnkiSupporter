@@ -21,7 +21,7 @@ import androidx.core.app.ActivityCompat
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
 
 class MainActivity : AppCompatActivity() {
-    private val _app_TAG = "Main Activity"
+    private val _appTAG = "Main Activity"
 
     companion object {
         const val REQUEST_RECORD_AUDIO_PERMISSION = 1001
@@ -48,9 +48,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.v(_app_TAG, "AnkiSupporter Start")
+        Log.v(_appTAG, "AnkiSupporter Start")
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+
+        WordSpeaker.init(this)
 
         setContent {
             AnkiSupporterTheme {
@@ -90,6 +92,6 @@ fun UserInterface(context: Context) {
 @Composable
 fun CardPreview() {
     AnkiSupporterTheme {
-//        Greeting()
+//        UserInterface()
     }
 }
