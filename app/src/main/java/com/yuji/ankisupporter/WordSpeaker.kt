@@ -18,7 +18,18 @@ object WordSpeaker : TextToSpeech.OnInitListener {
                 this.tts!!.language = Locale.US
             }
 
-            this.tts!!.speak("Hello, Japanese friends", TextToSpeech.QUEUE_FLUSH, null, "utteranceId")
+            this.tts!!.speak(
+                "Hello, Japanese friends",
+                TextToSpeech.QUEUE_FLUSH,
+                null,
+                "utteranceId")
         }
+    }
+
+    fun speak(string: String) {
+        tts!!.speak(string,
+            TextToSpeech.QUEUE_FLUSH,
+            null,
+            "utteranceId")
     }
 }
