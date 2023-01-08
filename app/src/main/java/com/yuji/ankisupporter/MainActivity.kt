@@ -1,7 +1,6 @@
 package com.yuji.ankisupporter
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -18,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import com.yuji.ankisupporter.ui.AppScreen
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
 
 class MainActivity : AppCompatActivity() {
+
     private val _appTAG = "Main Activity"
 
     companion object {
@@ -52,8 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
 
-        WordSpeaker.init(this)
-
         setContent {
             AnkiSupporterTheme {
                 // A surface container using the 'background' color from the theme
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    UserInterface(this)
+                    AppScreen()
                 }
             }
         }
@@ -70,21 +69,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         WordManager.onStop()
-    }
-}
-
-@Composable
-fun UserInterface(context: Context) {
-    Column {
-        Button(onClick = { WordManager.onRecord(context) }) {
-            Text(stringResource(R.string.record))
-        }
-        Button(onClick = { /*wordPlayer.onStop()*/ }) {
-            Text(stringResource(R.string.stop))
-        }
-        Button(onClick = { WordManager.onPlay() }) {
-            Text(stringResource(R.string.playback))
-        }
+        WordRecognizer.stop()
     }
 }
 
@@ -92,6 +77,11 @@ fun UserInterface(context: Context) {
 @Composable
 fun CardPreview() {
     AnkiSupporterTheme {
-//        UserInterface()
+        Column {
+            Button(onClick = {}) {
+                Text(stringResource(R.string.record))
+            }
+            Text(text = "Hello Japanese friends")
+        }
     }
 }
