@@ -20,7 +20,7 @@ object WordManager {
     private fun startRecording(context: Context) {
         // Record to the external cache directory for visibility
         if (fileName == "") {
-            fileName = "${context.externalCacheDir?.absolutePath}/audiorecordtest.3gp"
+            fileName = "${context.externalCacheDir?.absolutePath}/audioRecordTest.3gp"
             Log.v(LOG_TAG, "filePath is set")
         }
 
