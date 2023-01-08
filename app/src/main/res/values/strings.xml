@@ -3,4 +3,7 @@
     <string name="record">Record</string>
     <string name="stop">Stop</string>
     <string name="playback">Playback</string>
+    <string name="recognize">Recognize</string>
+    <string name="enter_your_word">Enter your word</string>
+    <string name="score">Score</string>
 </resources>
