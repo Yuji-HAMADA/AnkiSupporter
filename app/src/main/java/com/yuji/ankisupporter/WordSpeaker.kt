@@ -22,14 +22,17 @@ object WordSpeaker : TextToSpeech.OnInitListener {
                 "Hello, Japanese friends",
                 TextToSpeech.QUEUE_FLUSH,
                 null,
-                "utteranceId")
+                "utteranceId"
+            )
         }
     }
 
     fun speak(string: String) {
-        tts!!.speak(string,
+        tts!!.speak(
+            string,
             TextToSpeech.QUEUE_FLUSH,
             null,
-            "utteranceId")
+            "utteranceId"
+        )
     }
 }

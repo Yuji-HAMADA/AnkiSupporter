@@ -24,6 +24,7 @@ object WordRecognizer {
                 if (recData!!.size > 0) {
                     Log.v(wrTAG, recData[0])
                     appViewModel.updateInputWord(recData[0])
+                    WordSpeaker.speak(recData[0])
                 }
             }
 

@@ -25,6 +25,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateInputWord(inputWord: String) {
         userInput = inputWord
-        WordSpeaker.speak(inputWord)
+//        WordSpeaker.speak(inputWord)
     }
 }

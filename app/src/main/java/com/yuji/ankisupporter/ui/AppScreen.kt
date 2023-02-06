@@ -9,25 +9,24 @@ import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuji.ankisupporter.R
 import com.yuji.ankisupporter.WordRecognizer
 
 @Composable
 fun AppScreen (
     modifier: Modifier = Modifier,
-    appViewModel: AppViewModel = viewModel())
+    score: Int,
+    inputWord: String,
+    onWordChanged: (String) -> Unit,
+    onNextButtonClicked: () -> Unit = {}
+)
 {
-    val appUiState by appViewModel.uiState.collectAsState()
-
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -35,12 +34,17 @@ fun AppScreen (
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AppStatus(
-            score = appUiState.score
+            score = score
         )
         AppLayout(
-            inputWord = appViewModel.userInput,
-            onWordChanged = { appViewModel.updateInputWord(it) }
+            inputWord = inputWord,
+            onWordChanged = onWordChanged
         )
+        Button(
+            onClick = onNextButtonClicked
+        ) {
+            Text("Next")
+        }
     }
 }
 
