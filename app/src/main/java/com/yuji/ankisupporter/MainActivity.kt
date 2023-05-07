@@ -1,43 +1,33 @@
 package com.yuji.ankisupporter
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
-import com.yuji.ankisupporter.ui.AnkiSupporterScreen
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val _appTAG = "Main Activity"
 
-    companion object {
-        const val REQUEST_RECORD_AUDIO_PERMISSION = 1001
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.v(_appTAG, "RECORD is granted")
+        } else {
+            finish()
+        }
     }
 
-    // Requesting permission to RECORD_AUDIO
-    private var permissionToRecordAccepted = false
-    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionToRecordAccepted = if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        } else {
-            false
-        }
-        if (!permissionToRecordAccepted) finish()
+    private fun startRecordAudioPermissionRequest() {
+        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.v(_appTAG, "AnkiSupporter Start")
 
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+        startRecordAudioPermissionRequest()
 
         setContent {
             AnkiSupporterTheme {
@@ -54,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    AnkiSupporterScreen()
+                    AnkiSupporterApp()
                 }
             }
         }

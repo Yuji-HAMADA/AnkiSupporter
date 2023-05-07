@@ -19,7 +19,7 @@ object WordSpeaker : TextToSpeech.OnInitListener {
             }
 
             this.tts!!.speak(
-                "Hello, Japanese friends",
+                "Hello guys",
                 TextToSpeech.QUEUE_FLUSH,
                 null,
                 "utteranceId"

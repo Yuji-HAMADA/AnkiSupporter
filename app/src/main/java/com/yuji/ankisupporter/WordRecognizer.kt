@@ -7,15 +7,19 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
-import com.yuji.ankisupporter.ui.AppViewModel
+import com.yuji.ankisupporter.ui.item.ItemEditViewModel
+import com.yuji.ankisupporter.ui.item.ItemEntryViewModel
 
 object WordRecognizer {
     private var speechRecognizer : SpeechRecognizer? = null
     private const val wrTAG = "WordRecognizer"
 
+    private var mItemEntryViewModel: ItemEntryViewModel? = null
+    private var mItemEditViewModel: ItemEditViewModel? = null
+
     fun init(
         context: Context,
-        appViewModel: AppViewModel
+//        appViewModel: AppViewModel
     ) {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(object : RecognitionListener {
@@ -23,7 +27,10 @@ object WordRecognizer {
                 val recData = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (recData!!.size > 0) {
                     Log.v(wrTAG, recData[0])
-                    appViewModel.updateInputWord(recData[0])
+//                    appViewModel.updateInputWord(recData[0])
+//                    mItemEntryViewModel?.updateUiState(mItemUiState!!.copy(name = recData[0]))
+                    mItemEntryViewModel?.updateUiState(mItemEntryViewModel?.itemUiState!!.copy(name = recData[0]))
+                    mItemEditViewModel?.updateUiState(mItemEditViewModel?.itemUiState!!.copy(name = recData[0]))
                     WordSpeaker.speak(recData[0])
                 }
             }
@@ -76,14 +83,25 @@ object WordRecognizer {
         speechRecognizer?.destroy()
     }
 
-    /*
-    private fun startRecognizer() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+    fun setItemEntryViewModel(itemEntryViewModel: ItemEntryViewModel) {
+//    fun setItemEntryViewModel(itemEntryViewModel: ItemEntryViewModel) {
+//        if (mItemEntryViewModel == null) {
+            mItemEntryViewModel = itemEntryViewModel
+//        }
+    }
 
-        try {
-            startActivityForResult(intent, Request_recognize_speech)
-        }
-     */
+    fun setItemEditViewModel(itemEdiViewModel: ItemEditViewModel) {
+        mItemEditViewModel = itemEdiViewModel
+    }
+
+        /*
+        private fun startRecognizer() {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+
+            try {
+                startActivityForResult(intent, Request_recognize_speech)
+            }
+         */
 
 }
