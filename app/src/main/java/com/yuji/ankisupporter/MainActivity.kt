@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Log.v(_appTAG, "RECORD is granted")
+            Log.v(_appTAG, "Permission request has been granted!")
         } else {
             finish()
         }
