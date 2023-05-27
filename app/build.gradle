@@ -73,12 +73,9 @@ dependencies {
     implementation "androidx.room:room-ktx:2.5.1"
 
     // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+//    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+//    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    // import Kotlin API client BOM
-    implementation platform('com.aallam.openai:openai-client-bom:3.2.3')
-
-    // define dependencies without versions
-    implementation 'com.aallam.openai:openai-client'
-    runtimeOnly 'io.ktor:ktor-client-okhttp'}
+    // Translate
+    implementation 'com.google.mlkit:translate:17.0.1'
+}

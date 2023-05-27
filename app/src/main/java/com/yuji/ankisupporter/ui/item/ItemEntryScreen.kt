@@ -16,8 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.aallam.openai.api.completion.TextCompletion
-import com.aallam.openai.api.model.Model
 import com.yuji.ankisupporter.AnkiSupporterTopAppBar
 import com.yuji.ankisupporter.R
 import com.yuji.ankisupporter.WordRecognizer
@@ -61,11 +59,6 @@ fun ItemEntryScreen(
                     Log.v(_itemEntryScreenTAG, "Save Start")
                     viewModel.saveItem()
                     navigateBack()
-                    val models: List<Model> = viewModel.openAI.models()
-                    Log.v(_itemEntryScreenTAG, models[0].ownedBy)
-                    val completion: TextCompletion =
-                        viewModel.openAI.completion(viewModel.completionRequest)
-                    Log.v(_itemEntryScreenTAG, completion.toString())
                 }
             },
             modifier = modifier.padding(innerPadding)
