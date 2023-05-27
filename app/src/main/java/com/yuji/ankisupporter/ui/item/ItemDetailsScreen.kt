@@ -145,7 +145,7 @@ fun ItemDetailsScreenPreview() {
         ItemDetailsBody(
             itemUiState = ItemUiState(
                 name = "Item name",
-                price = "10.00",
+//                price = "10.00",
                 quantity = "5"),
 //            onSellItem = {},
             onDelete = {}

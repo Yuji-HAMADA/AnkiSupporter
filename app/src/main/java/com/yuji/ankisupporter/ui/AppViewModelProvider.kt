@@ -23,7 +23,10 @@ object AppViewModelProvider {
         }
         // Initializer for ItemEntryViewModel
         initializer {
-            ItemEntryViewModel(AnkiSupporterApplication().container.itemsRepository)
+            ItemEntryViewModel(
+                AnkiSupporterApplication().container.itemsRepository,
+//                AnkiSupporterApplication().container.chatRepository
+            )
         }
 
         // Initializer for ItemDetailsViewModel

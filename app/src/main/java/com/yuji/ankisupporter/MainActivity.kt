@@ -30,12 +30,17 @@ class MainActivity : ComponentActivity() {
         requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
+    private fun startInternetPermissionRequest() {
+        requestPermissionLauncher.launch(Manifest.permission.INTERNET)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Log.v(_appTAG, "AnkiSupporter Start")
 
         startRecordAudioPermissionRequest()
+        startInternetPermissionRequest()
 
         setContent {
             AnkiSupporterTheme {

@@ -163,9 +163,9 @@ fun HomeScreenRoutePreview() {
     AnkiSupporterTheme {
         HomeBody(
             listOf(
-                Item(1, "Game", 100.0, 20),
-                Item(2, "Pen", 200.0, 30),
-                Item(3, "TV", 300.0, 50)
+                Item(1, "Game", "one", 20),
+                Item(2, "Pen", "two", 30),
+                Item(3, "TV", "three", 50)
             ),
             onItemClick = {}
         )
