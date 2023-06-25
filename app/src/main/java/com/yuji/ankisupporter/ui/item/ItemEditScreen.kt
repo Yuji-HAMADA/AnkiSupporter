@@ -1,5 +1,6 @@
 package com.yuji.ankisupporter.ui.item
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,9 +31,13 @@ fun ItemEditScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val itemEditScreenTAG = "ItemEditScreen"
+
     val coroutineScope = rememberCoroutineScope()
 
     WordRecognizer.setItemEditViewModel(viewModel)
+
+    Log.v(itemEditScreenTAG, "ItemEditScreen Start")
 
     Scaffold(
         topBar = {

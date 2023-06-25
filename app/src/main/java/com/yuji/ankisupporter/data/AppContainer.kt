@@ -32,14 +32,4 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
      */
 
-    /*
-    private val chatApiService: ChatApiService by lazy {
-        retrofit.create(ChatApiService::class.java)
-    }
-    */
-
-//    override val chatRepository: ChatRepository by lazy {
-//        NetworkChatRepository(chatApiService)
-//        get() =
-//    }
 }

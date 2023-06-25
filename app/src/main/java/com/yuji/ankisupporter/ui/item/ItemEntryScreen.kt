@@ -22,6 +22,7 @@ import com.yuji.ankisupporter.WordRecognizer
 import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
+import com.yuji.ankisupporter.utility.Translator
 import kotlinx.coroutines.launch
 
 object ItemEntryDestination : NavigationDestination {
@@ -38,7 +39,7 @@ fun ItemEntryScreen(
     viewModel: ItemEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val _itemEntryScreenTAG = "Item Entry Screen"
+    val itemEntryScreenTAG = "ItemEntryScreen"
 
     WordRecognizer.setItemEntryViewModel(viewModel)
 
@@ -55,11 +56,17 @@ fun ItemEntryScreen(
             itemUiState = viewModel.itemUiState,
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
-                coroutineScope.launch {
-                    Log.v(_itemEntryScreenTAG, "Save Start")
-                    viewModel.saveItem()
-                    navigateBack()
-                }
+                    Log.v(itemEntryScreenTAG, "Save Start")
+                    Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
+                        .addOnSuccessListener { translatedText ->
+                            viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
+                            Log.v(itemEntryScreenTAG, viewModel.itemUiState.name)
+                            Log.v(itemEntryScreenTAG, viewModel.itemUiState.meaning)
+                            coroutineScope.launch {
+                                viewModel.saveItem()
+                            }
+                        }
+                navigateBack()
             },
             modifier = modifier.padding(innerPadding)
         )

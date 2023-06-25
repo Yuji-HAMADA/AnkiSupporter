@@ -1,5 +1,6 @@
 package com.yuji.ankisupporter.ui.home
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -125,18 +126,23 @@ private fun AnkiSupporterItem(
     onItemClick: (Item) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val ankiSupporterItemTAG = "AnkiSupporter Item"
+
     Row(modifier = modifier
         .fillMaxWidth()
         .clickable { onItemClick(item) }
         .padding(vertical = 16.dp)
     ) {
+        Log.v(ankiSupporterItemTAG, item.name)
+        Log.v(ankiSupporterItemTAG, item.meaning)
+
         Text(
             text = item.name,
             modifier = Modifier.weight(1.5f),
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "gabbage"
+            text = item.meaning,
         )
         /*
         Text(
