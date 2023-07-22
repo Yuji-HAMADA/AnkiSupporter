@@ -1,5 +1,7 @@
 package com.yuji.ankisupporter.ui.item
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,6 +82,8 @@ private fun ItemDetailsBody(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -87,6 +92,20 @@ private fun ItemDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
         ItemInputForm(itemUiState = itemUiState, enabled = false)
+
+        Button(
+            onClick = {
+                val url = "https://www.playphrase.me/#/search?q=" + itemUiState.name
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+            },
+            enabled = itemUiState.actionEnabled,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.play_with_this_word))
+        }
+
+
         /*
         Button(
             onClick = onSellItem,

@@ -25,4 +25,5 @@
     <string name="recognize">Recognize</string>
     <string name="enter_your_word">Enter your word</string>
     <string name="score">Score</string>
+    <string name="play_with_this_word">Play</string>
 </resources>

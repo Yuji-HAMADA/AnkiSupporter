@@ -10,64 +10,57 @@ import android.util.Log
 import com.yuji.ankisupporter.ui.item.ItemEditViewModel
 import com.yuji.ankisupporter.ui.item.ItemEntryViewModel
 
-object WordRecognizer {
-    private var speechRecognizer : SpeechRecognizer? = null
+object WordRecognizer : RecognitionListener {
+    private lateinit var speechRecognizer : SpeechRecognizer
     private const val wrTAG = "WordRecognizer"
 
     private var mItemEntryViewModel: ItemEntryViewModel? = null
     private var mItemEditViewModel: ItemEditViewModel? = null
 
-    fun init(
-        context: Context,
-//        appViewModel: AppViewModel
-    ) {
+    fun init(context: Context) {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-        speechRecognizer?.setRecognitionListener(object : RecognitionListener {
-            override fun onResults(results: Bundle?) {
-                val recData = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                if (recData!!.size > 0) {
-                    Log.v(wrTAG, recData[0])
-//                    appViewModel.updateInputWord(recData[0])
-//                    mItemEntryViewModel?.updateUiState(mItemUiState!!.copy(name = recData[0]))
-                    mItemEntryViewModel?.updateUiState(mItemEntryViewModel?.itemUiState!!.copy(name = recData[0]))
-                    mItemEditViewModel?.updateUiState(mItemEditViewModel?.itemUiState!!.copy(name = recData[0]))
-                    WordSpeaker.speak(recData[0])
-                }
-            }
+        speechRecognizer.setRecognitionListener(this)
+    }
 
-            override fun onBeginningOfSpeech() {
-//                TODO("Not yet implemented")
-            }
+    override fun onResults(results: Bundle?) {
+        val recData = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        if (recData!!.size > 0) {
+            Log.v(wrTAG, recData[0])
+            mItemEntryViewModel?.updateUiState(mItemEntryViewModel?.itemUiState!!.copy(name = recData[0]))
+            mItemEditViewModel?.updateUiState(mItemEditViewModel?.itemUiState!!.copy(name = recData[0]))
+            WordSpeaker.speak(recData[0])
+        }
+    }
 
-            override fun onBufferReceived(buffer: ByteArray?) {
-                TODO("Not yet implemented")
-            }
+    override fun onBeginningOfSpeech() {
+        Log.v(wrTAG, "Begin Speech")
+    }
 
-            override fun onEndOfSpeech() {
-//                TODO("Not yet implemented")
-                Log.v(wrTAG, "End Of Speech")
-            }
+    override fun onBufferReceived(buffer: ByteArray?) {
+        Log.v(wrTAG, "Buffer Received")
+    }
 
-            override fun onError(error: Int) {
-//                TODO("Not yet implemented")
-            }
+    override fun onEndOfSpeech() {
+        Log.v(wrTAG, "End Of Speech")
+    }
 
-            override fun onReadyForSpeech(params: Bundle?) {
-//                TODO("Not yet implemented")
-            }
+    override fun onError(error: Int) {
+        Log.v(wrTAG, "Error")
+    }
 
-            override fun onEvent(eventType: Int, params: Bundle?) {
-                TODO("Not yet implemented")
-            }
+    override fun onReadyForSpeech(params: Bundle?) {
+        Log.v(wrTAG, "Ready for Speech")
+    }
 
-            override fun onPartialResults(partialResults: Bundle?) {
-                TODO("Not yet implemented")
-            }
+    override fun onEvent(eventType: Int, params: Bundle?) {
+        Log.v(wrTAG, "Event happened")
+    }
 
-            override fun onRmsChanged(rmsdB: Float) {
-//                TODO("Not yet implemented")
-            }
-        })
+    override fun onPartialResults(partialResults: Bundle?) {
+        Log.v(wrTAG, "Partial Results")
+    }
+
+    override fun onRmsChanged(rmsdB: Float) {
     }
 
     fun startRecognizer() {
@@ -75,33 +68,18 @@ object WordRecognizer {
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-
-        this.speechRecognizer?.startListening(intent)
+        speechRecognizer.startListening(intent)
     }
 
     fun stop() {
-        speechRecognizer?.destroy()
+        speechRecognizer.destroy()
     }
 
     fun setItemEntryViewModel(itemEntryViewModel: ItemEntryViewModel) {
-//    fun setItemEntryViewModel(itemEntryViewModel: ItemEntryViewModel) {
-//        if (mItemEntryViewModel == null) {
-            mItemEntryViewModel = itemEntryViewModel
-//        }
+        mItemEntryViewModel = itemEntryViewModel
     }
 
     fun setItemEditViewModel(itemEdiViewModel: ItemEditViewModel) {
         mItemEditViewModel = itemEdiViewModel
     }
-
-        /*
-        private fun startRecognizer() {
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-
-            try {
-                startActivityForResult(intent, Request_recognize_speech)
-            }
-         */
-
 }

@@ -1,5 +1,7 @@
 package com.yuji.ankisupporter.ui.item
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,8 @@ fun ItemEntryScreen(
     val coroutineScope = rememberCoroutineScope()
     val itemEntryScreenTAG = "ItemEntryScreen"
 
+    val context = LocalContext.current
+
     WordRecognizer.setItemEntryViewModel(viewModel)
 
     Scaffold(
@@ -56,17 +61,22 @@ fun ItemEntryScreen(
             itemUiState = viewModel.itemUiState,
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
-                    Log.v(itemEntryScreenTAG, "Save Start")
-                    Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
-                        .addOnSuccessListener { translatedText ->
-                            viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
-                            Log.v(itemEntryScreenTAG, viewModel.itemUiState.name)
-                            Log.v(itemEntryScreenTAG, viewModel.itemUiState.meaning)
-                            coroutineScope.launch {
-                                viewModel.saveItem()
-                            }
+                Log.v(itemEntryScreenTAG, "Save Start")
+                Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
+                    .addOnSuccessListener { translatedText ->
+                        viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
+                        Log.v(itemEntryScreenTAG, viewModel.itemUiState.name)
+                        Log.v(itemEntryScreenTAG, viewModel.itemUiState.meaning)
+                        coroutineScope.launch {
+                            viewModel.saveItem()
                         }
+                    }
                 navigateBack()
+            },
+            onOpenWebsite = {
+                val url = "https://www.playphrase.me/#/search?q=" + viewModel.itemUiState.name
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
             },
             modifier = modifier.padding(innerPadding)
         )
@@ -78,6 +88,7 @@ fun ItemEntryBody(
     itemUiState: ItemUiState,
     onItemValueChange: (ItemUiState) -> Unit,
     onSaveClick: () -> Unit,
+    onOpenWebsite: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -87,12 +98,22 @@ fun ItemEntryBody(
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         ItemInputForm(itemUiState = itemUiState, onValueChange = onItemValueChange)
+        Button(onClick = { WordRecognizer.startRecognizer() }) {
+            Text(stringResource(R.string.record))
+        }
         Button(
             onClick = onSaveClick,
             enabled = itemUiState.actionEnabled,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_action))
+        }
+        Button(
+            onClick = onOpenWebsite,
+            enabled = itemUiState.actionEnabled,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.play_with_this_word))
         }
     }
 }
@@ -113,31 +134,6 @@ fun ItemInputForm(
             enabled = enabled,
             singleLine = true
         )
-        /*
-        OutlinedTextField(
-            value = itemUiState.price,
-            onValueChange = { onValueChange(itemUiState.copy(price = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            label = { Text(stringResource(R.string.item_price_req)) },
-            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = itemUiState.quantity,
-            onValueChange = { onValueChange(itemUiState.copy(quantity = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.quantity_req)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-
-         */
-        Button(onClick = { WordRecognizer.startRecognizer() }) {
-            Text(stringResource(R.string.record))
-        }
     }
 }
 
@@ -152,7 +148,8 @@ private fun ItemEntryScreenPreview() {
                 quantity = "5"
             ),
             onItemValueChange = {},
-            onSaveClick = {}
+            onSaveClick = {},
+            onOpenWebsite = {}
         )
     }
 }
