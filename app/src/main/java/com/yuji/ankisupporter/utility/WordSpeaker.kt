@@ -1,4 +1,4 @@
-package com.yuji.ankisupporter
+package com.yuji.ankisupporter.utility
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
@@ -14,11 +14,11 @@ object WordSpeaker : TextToSpeech.OnInitListener {
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val locale = Locale.US
-            if (this.tts!!.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) {
-                this.tts!!.language = Locale.US
+            if (tts!!.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) {
+                tts!!.language = Locale.US
             }
 
-            this.tts!!.speak(
+            tts!!.speak(
                 "Hello guys",
                 TextToSpeech.QUEUE_FLUSH,
                 null,

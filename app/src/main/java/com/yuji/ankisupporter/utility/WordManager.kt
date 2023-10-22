@@ -1,22 +1,23 @@
-package com.yuji.ankisupporter
+package com.yuji.ankisupporter.utility
 
-import android.content.Context
+//import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.util.Log
-import java.io.IOException
+//import android.util.Log
+//import java.io.IOException
 
 object WordManager {
 
-    private var fileName: String = ""
+//    private var fileName: String = ""
     private var player: MediaPlayer? = null
     private var recorder: MediaRecorder? = null
 
-    private var mStartRecording : Boolean = true
-    private var mStartPlaying : Boolean = true
+//    private var mStartRecording : Boolean = true
+//    private var mStartPlaying : Boolean = true
 
-    private const val LOG_TAG = "Word Manager"
+//    private const val LOG_TAG = "Word Manager"
 
+    /*
     private fun startRecording(context: Context) {
         // Record to the external cache directory for visibility
         if (fileName == "") {
@@ -86,6 +87,7 @@ object WordManager {
         }
         mStartPlaying = !mStartPlaying
     }
+*/
 
     fun onStop() {
         recorder?.release()

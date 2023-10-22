@@ -5,6 +5,8 @@ import android.util.Log
 import com.yuji.ankisupporter.data.AppContainer
 import com.yuji.ankisupporter.data.AppDataContainer
 import com.yuji.ankisupporter.utility.Translator
+import com.yuji.ankisupporter.utility.WordRecognizer
+import com.yuji.ankisupporter.utility.WordSpeaker
 
 class AnkiSupporterApplication : Application() {
     private val ankiSupporterAppTAG = "AnkiSupporterApp"

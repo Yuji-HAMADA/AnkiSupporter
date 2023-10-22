@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuji.ankisupporter.AnkiSupporterTopAppBar
 import com.yuji.ankisupporter.R
-import com.yuji.ankisupporter.WordRecognizer
+import com.yuji.ankisupporter.utility.WordRecognizer
 import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
@@ -59,7 +59,9 @@ fun ItemEditScreen(
                 Log.v(itemEditScreenTAG, "Save Start")
                 Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
                     .addOnSuccessListener { translatedText ->
-                        viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
+                        viewModel.updateUiState(
+                            viewModel.itemUiState.copy(meaning = translatedText)
+                        )
                         Log.v(itemEditScreenTAG, viewModel.itemUiState.name)
                         Log.v(itemEditScreenTAG, viewModel.itemUiState.meaning)
                         coroutineScope.launch {
@@ -67,14 +69,6 @@ fun ItemEditScreen(
                             navigateBack()
                         }
                     }
-
-                /*
-                coroutineScope.launch {
-                    viewModel.updateItem()
-                    navigateBack()
-                }
-
-                 */
             },
             onOpenWebsite = {
                 val url = "https://www.playphrase.me/#/search?q=" + viewModel.itemUiState.name
@@ -90,6 +84,9 @@ fun ItemEditScreen(
 @Composable
 fun ItemEditRoutePreview() {
     AnkiSupporterTheme {
-        ItemEditScreen(navigateBack = { /*Do nothing*/ }, onNavigateUp = { /*Do nothing*/ })
+        ItemEditScreen(
+            navigateBack = { /*Do nothing*/ },
+            onNavigateUp = { /*Do nothing*/ }
+        )
     }
 }

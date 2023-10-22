@@ -1,4 +1,4 @@
-package com.yuji.ankisupporter
+package com.yuji.ankisupporter.utility
 
 import android.content.Context
 import android.content.Intent

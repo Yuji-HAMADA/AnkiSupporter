@@ -1,11 +1,13 @@
 package com.yuji.ankisupporter
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +27,7 @@ fun AnkiSupporterApp(navController: NavHostController = rememberNavController())
 /**
  * App bar to display title and conditionally display the back navigation.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnkiSupporterTopAppBar(
     title: String,
@@ -33,7 +36,7 @@ fun AnkiSupporterTopAppBar(
     navigateUp: () -> Unit = {}
 ) {
     if (canNavigateBack) {
-        TopAppBar(
+        CenterAlignedTopAppBar(
             title = { Text(title) },
             modifier = modifier,
             navigationIcon = {
