@@ -12,6 +12,9 @@ data class Item(
     val id: Int = 0,
     val name: String,
     val meaning: String,
+    val meaningDetail: String,
+    val level: String,
+    val eikenLevel: String,
 //    val price: Double,
-    val quantity: Int
+//    val : Int
 )

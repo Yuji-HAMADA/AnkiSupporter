@@ -1,5 +1,6 @@
 package com.yuji.ankisupporter.ui.item
 
+import com.yuji.ankisupporter.network.WeblioApi
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -25,7 +26,6 @@ import com.yuji.ankisupporter.utility.WordRecognizer
 import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
-import com.yuji.ankisupporter.utility.Translator
 import kotlinx.coroutines.launch
 
 object ItemEntryDestination : NavigationDestination {
@@ -62,6 +62,7 @@ fun ItemEntryScreen(
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
                 Log.v(itemEntryScreenTAG, "Save Start")
+                /*
                 Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
                     .addOnSuccessListener { translatedText ->
                         viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
@@ -71,7 +72,17 @@ fun ItemEntryScreen(
                             viewModel.saveItem()
                         }
                     }
-                navigateBack()
+                */
+
+                coroutineScope.launch {
+                    Log.v(itemEntryScreenTAG, "saving item...")
+                    val meaning = WeblioApi.getMeaning(viewModel.itemUiState.name)
+//                        .substring(0, 100)
+                    viewModel.updateUiState(viewModel.itemUiState.copy(meaning = meaning))
+                    viewModel.saveItem()
+                    Log.v(itemEntryScreenTAG, "Item saved")
+                    navigateBack()
+                }
             },
             onOpenWebsite = {
                 val url = "https://www.playphrase.me/#/search?q=" + viewModel.itemUiState.name
@@ -145,7 +156,7 @@ private fun ItemEntryScreenPreview() {
             itemUiState = ItemUiState(
                 name = "Item name",
 //                price = "10.00",
-                quantity = "5"
+//                quantity = "5"
             ),
             onItemValueChange = {},
             onSaveClick = {},

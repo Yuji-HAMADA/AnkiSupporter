@@ -99,7 +99,8 @@ private fun ItemDetailsBody(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
-        ItemInputForm(itemUiState = itemUiState, enabled = false)
+//        ItemInputForm(itemUiState = itemUiState, enabled = false)
+        Text(itemUiState.name)
 
         Button(
             onClick = {
@@ -173,7 +174,8 @@ fun ItemDetailsScreenPreview() {
             itemUiState = ItemUiState(
                 name = "Item name",
 //                price = "10.00",
-                quantity = "5"),
+//                quantity = "5"),
+            ),
 //            onSellItem = {},
             onDelete = {}
         )

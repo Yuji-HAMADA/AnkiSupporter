@@ -9,8 +9,11 @@ data class ItemUiState(
     val id: Int = 0,
     val name: String = "",
     val meaning: String = "",
+    val meaningDetail: String = "",
+    val level: String = "",
+    val eikenLevel: String = "",
 //    val price: String = "100",
-    val quantity: String = "1",
+//    val quantity: String = "1",
     val actionEnabled: Boolean = false
 )
 
@@ -22,8 +25,11 @@ fun ItemUiState.toItem(): Item = Item(
     id = id,
     name = name,
     meaning = meaning,
+    meaningDetail = meaningDetail,
+    level = level,
+    eikenLevel = eikenLevel
 //    price = price.toDoubleOrNull() ?: 0.0,
-    quantity = quantity.toIntOrNull() ?: 0
+//    quantity = quantity.toIntOrNull() ?: 0
 )
 
 /**
@@ -34,11 +40,12 @@ fun Item.toItemUiState(actionEnabled: Boolean = false): ItemUiState = ItemUiStat
     name = name,
     meaning = meaning,
 //    price = price.toString(),
-    quantity = quantity.toString(),
+//    quantity = quantity.toString(),
     actionEnabled = actionEnabled
 )
 
 fun ItemUiState.isValid() : Boolean {
 //    return name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
-    return name.isNotBlank() && quantity.isNotBlank()
+//    return name.isNotBlank() && quantity.isNotBlank()
+    return name.isNotBlank()
 }

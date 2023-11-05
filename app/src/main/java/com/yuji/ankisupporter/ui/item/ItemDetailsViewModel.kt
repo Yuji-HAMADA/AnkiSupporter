@@ -20,7 +20,8 @@ class ItemDetailsViewModel(
         itemsRepository.getItemStream(itemId)
             .filterNotNull()
             .map {
-                it.toItemUiState(actionEnabled = it.quantity > 0 )
+//                it.toItemUiState(actionEnabled = it.quantity > 0 )
+                it.toItemUiState(actionEnabled = true)
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
