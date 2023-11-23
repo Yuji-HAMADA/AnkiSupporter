@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuji.ankisupporter.AnkiSupporterTopAppBar
 import com.yuji.ankisupporter.R
+import com.yuji.ankisupporter.network.GoogleCustomSearchApi
 import com.yuji.ankisupporter.utility.WordRecognizer
 import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
@@ -78,7 +79,13 @@ fun ItemEntryScreen(
                     Log.v(itemEntryScreenTAG, "saving item...")
                     val meaning = WeblioApi.getMeaning(viewModel.itemUiState.name)
 //                        .substring(0, 100)
-                    viewModel.updateUiState(viewModel.itemUiState.copy(meaning = meaning))
+                    val imageLink = GoogleCustomSearchApi.getResponse()
+                    viewModel.updateUiState(
+                        viewModel.itemUiState.copy(
+                            meaning = meaning,
+                            imageLink = imageLink
+                        )
+                    )
                     viewModel.saveItem()
                     Log.v(itemEntryScreenTAG, "Item saved")
                     navigateBack()

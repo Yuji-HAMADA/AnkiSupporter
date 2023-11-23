@@ -19,10 +19,11 @@ interface WeblioApiService {
     @GET("content/{word}")
     suspend fun getResponse(@Path("word") word: String): String
 }
-object WeblioApi {
-    private const val LOG_TAG = "com.yuji.ankisupporter.network.WeblioApi"
 
-    val retrofitService : WeblioApiService by lazy {
+object WeblioApi {
+    private const val LOG_TAG = "WeblioApi"
+
+    private val retrofitService : WeblioApiService by lazy {
         retrofit.create(WeblioApiService::class.java)
     }
 
@@ -32,6 +33,4 @@ object WeblioApi {
         Log.v(LOG_TAG, "Get meaning finished")
         return Jsoup.parse(response).getElementsByClass("content-explanation  ej").text()
     }
-
-
 }

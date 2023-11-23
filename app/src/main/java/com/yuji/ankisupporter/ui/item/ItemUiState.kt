@@ -12,6 +12,7 @@ data class ItemUiState(
     val meaningDetail: String = "",
     val level: String = "",
     val eikenLevel: String = "",
+    val imageLink: String = "",
 //    val price: String = "100",
 //    val quantity: String = "1",
     val actionEnabled: Boolean = false
@@ -27,7 +28,8 @@ fun ItemUiState.toItem(): Item = Item(
     meaning = meaning,
     meaningDetail = meaningDetail,
     level = level,
-    eikenLevel = eikenLevel
+    eikenLevel = eikenLevel,
+    imageLink = imageLink
 //    price = price.toDoubleOrNull() ?: 0.0,
 //    quantity = quantity.toIntOrNull() ?: 0
 )

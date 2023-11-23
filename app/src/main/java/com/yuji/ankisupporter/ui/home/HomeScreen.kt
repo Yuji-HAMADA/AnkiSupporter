@@ -165,7 +165,7 @@ private fun AnkiSupporterItem(
                 )
 
                 Text(
-                    text = item.meaning,
+                    text = item.meaning.take(200),
                     style = MaterialTheme.typography.titleSmall,
                 )
             }
@@ -186,9 +186,9 @@ fun HomeScreenPreview() {
     AnkiSupporterTheme {
         HomeBody(
             listOf(
-                Item(1, "Game", "one", "", "", ""),
-                Item(2, "Pen", "two", "", "", ""),
-                Item(3, "TV", "three", "", "", "")
+                Item(1, "Game", "one", "", "", "", ""),
+                Item(2, "Pen", "two", "", "", "", ""),
+                Item(3, "TV", "three", "", "", "", "")
             ),
             onItemClick = {}
         )
@@ -200,7 +200,7 @@ fun HomeScreenPreview() {
 fun AnkiSupporterItemPreview() {
     AnkiSupporterTheme {
         AnkiSupporterItem(
-            item = Item(1, "Game", "GH", "", "", ""),
+            item = Item(1, "Game", "GH", "", "", "", ""),
             onItemClick = { }
         )
     }

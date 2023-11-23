@@ -15,6 +15,7 @@ data class Item(
     val meaningDetail: String,
     val level: String,
     val eikenLevel: String,
+    val imageLink: String
 //    val price: Double,
 //    val : Int
 )
