@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,7 +38,13 @@ fun AnkiSupporterTopAppBar(
 ) {
     if (canNavigateBack) {
         CenterAlignedTopAppBar(
-            title = { Text(title) },
+            title = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
             modifier = modifier,
             navigationIcon = {
                 IconButton(onClick = navigateUp) {

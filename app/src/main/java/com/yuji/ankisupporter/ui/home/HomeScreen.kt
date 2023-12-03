@@ -1,7 +1,5 @@
 package com.yuji.ankisupporter.ui.home
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,12 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.yuji.ankisupporter.AnkiSupporterTopAppBar
 import com.yuji.ankisupporter.R
 import com.yuji.ankisupporter.data.Item
@@ -133,8 +133,6 @@ private fun AnkiSupporterItem(
     onItemClick: (Item) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val ankiSupporterItemTAG = "AnkiSupporter Item"
-
     Card(
         colors = CardDefaults.cardColors(
 //            containerColor = MaterialTheme.colorScheme.contentColorFor(Purple200),
@@ -156,25 +154,26 @@ private fun AnkiSupporterItem(
                     dimensionResource(id = R.dimen.padding_small)
                 )
             ) {
-                Log.v(ankiSupporterItemTAG, item.name)
-                Log.v(ankiSupporterItemTAG, item.meaning)
-
                 Text(
                     text = item.name,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Text(
                     text = item.meaning.take(200),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
-            Image(
-                painter = painterResource(R.drawable.fc2_nature_meditations),
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(item.imageLink)
+                    .build(),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale =  ContentScale.Crop,
                 modifier = modifier
-                    .size(50.dp)
+                    .size(60.dp)
             )
         }
     }

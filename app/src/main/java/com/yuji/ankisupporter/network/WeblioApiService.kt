@@ -7,8 +7,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-private const val BASE_URL =
-    "https://ejje.weblio.jp"
+private const val BASE_URL = "https://ejje.weblio.jp"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())

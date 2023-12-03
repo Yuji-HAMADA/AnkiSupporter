@@ -43,6 +43,10 @@ fun Item.toItemUiState(actionEnabled: Boolean = false): ItemUiState = ItemUiStat
     meaning = meaning,
 //    price = price.toString(),
 //    quantity = quantity.toString(),
+    meaningDetail = meaningDetail,
+    level = level,
+    eikenLevel = eikenLevel,
+    imageLink = imageLink,
     actionEnabled = actionEnabled
 )
 

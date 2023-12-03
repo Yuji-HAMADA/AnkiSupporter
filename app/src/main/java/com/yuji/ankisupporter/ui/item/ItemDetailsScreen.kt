@@ -24,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.yuji.ankisupporter.AnkiSupporterTopAppBar
 import com.yuji.ankisupporter.R
 import com.yuji.ankisupporter.ui.AppViewModelProvider
@@ -100,7 +102,27 @@ private fun ItemDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
 //        ItemInputForm(itemUiState = itemUiState, enabled = false)
-        Text(itemUiState.name)
+        Text(
+            text = itemUiState.name,
+            style = MaterialTheme.typography.displayLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Text(
+            text = itemUiState.meaning.take(200),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(itemUiState.imageLink)
+                .build(),
+            contentDescription = null,
+//            contentScale =  ContentScale.Crop,
+//            modifier = modifier
+//               .size(60.dp)
+        )
 
         Button(
             onClick = {
