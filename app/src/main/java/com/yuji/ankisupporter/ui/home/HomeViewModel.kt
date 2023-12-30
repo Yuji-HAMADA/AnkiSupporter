@@ -24,9 +24,23 @@ class HomeViewModel(itemsRepository: ItemsRepository) : ViewModel() {
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
+
+    fun setMaxIndex() {
+        var maxId = 0
+
+        for ((i, item) in homeUiState.value.itemList.withIndex()) {
+            if (maxId < item.id) {
+                maxId = item.id
+                homeUiState.value.index = i
+            }
+        }
+    }
 }
 
 /**
  * Ui State for HomeScreen
  */
-data class HomeUiState(val itemList: List<Item> = listOf())
+data class HomeUiState(
+    val itemList: List<Item> = listOf(),
+    var index: Int = 0
+)

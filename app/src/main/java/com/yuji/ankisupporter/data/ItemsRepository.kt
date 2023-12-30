@@ -16,6 +16,9 @@ interface ItemsRepository {
      */
     fun getItemStream(id: Int): Flow<Item?>
 
+    /* Retrieve max id */
+    fun getMaxId(): Int
+
     /**
      * Insert item in the data source
      */

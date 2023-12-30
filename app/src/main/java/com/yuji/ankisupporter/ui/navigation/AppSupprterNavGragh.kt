@@ -32,12 +32,14 @@ fun AnkiSupporterNavHost(
                 }
             )
         }
+
         composable(route = ItemEntryDestination.route) {
             ItemEntryScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )
         }
+
         composable(
             route = ItemDetailsDestination.routeWithArgs,
             arguments = listOf(navArgument(ItemDetailsDestination.itemIdArg) {
@@ -49,6 +51,7 @@ fun AnkiSupporterNavHost(
                 navigateBack = { navController.navigateUp() }
             )
         }
+
         composable(
             route = ItemEditDestination.routeWithArgs,
             arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {

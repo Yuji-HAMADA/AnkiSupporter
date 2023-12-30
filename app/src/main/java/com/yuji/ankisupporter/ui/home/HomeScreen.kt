@@ -1,9 +1,11 @@
 package com.yuji.ankisupporter.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -11,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +31,7 @@ import com.yuji.ankisupporter.data.Item
 import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
+import kotlinx.coroutines.launch
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -43,6 +47,8 @@ fun HomeScreen(
         viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
+
+    viewModel.setMaxIndex()
 
     Scaffold(
         topBar = {
@@ -66,7 +72,7 @@ fun HomeScreen(
         },
     ) { innerPadding ->
         HomeBody(
-            itemList = homeUiState.itemList,
+            homeUiState = homeUiState,
             onItemClick = navigateToItemUpdate,
             modifier = modifier.padding(innerPadding)
         )
@@ -75,7 +81,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-    itemList: List<Item>,
+    homeUiState: HomeUiState,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -87,14 +93,15 @@ private fun HomeBody(
     ) {
 //        AnkiSupporterListHeader()
 //        Divider()
-        if (itemList.isEmpty()) {
+        if (homeUiState.itemList.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_item_description),
                 style = MaterialTheme.typography.titleLarge
             )
         } else {
             AnkiSupporterList(
-                itemList = itemList,
+                itemList = homeUiState.itemList,
+                index = homeUiState.index,
                 onItemClick = { onItemClick(it.id) },
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(
@@ -106,13 +113,19 @@ private fun HomeBody(
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun AnkiSupporterList(
+    modifier: Modifier = Modifier,
     itemList: List<Item>,
+    index: Int = -1,
     onItemClick: (Item) -> Unit,
-    modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(
+        state = listState,
         modifier = modifier,
 //        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -123,6 +136,12 @@ private fun AnkiSupporterList(
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
             )
+        }
+    }
+
+    if (index >= 0) {
+        coroutineScope.launch {
+            listState.scrollToItem(index = index)
         }
     }
 }
@@ -179,6 +198,7 @@ private fun AnkiSupporterItem(
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -193,7 +213,7 @@ fun HomeScreenPreview() {
         )
     }
 }
-
+ */
 @Preview(showBackground = true)
 @Composable
 fun AnkiSupporterItemPreview() {
