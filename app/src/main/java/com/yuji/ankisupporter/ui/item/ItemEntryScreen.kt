@@ -33,6 +33,7 @@ import com.yuji.ankisupporter.ui.AppViewModelProvider
 import com.yuji.ankisupporter.ui.navigation.NavigationDestination
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
@@ -41,7 +42,6 @@ object ItemEntryDestination : NavigationDestination {
 
 @Composable
 fun ItemEntryScreen(
-    navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     navigateToItemDetails: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -81,7 +81,6 @@ fun ItemEntryScreen(
                 coroutineScope.launch {
                     Log.v(itemEntryScreenTAG, "saving item...")
                     val meaning = WeblioApi.getMeaning(viewModel.itemUiState.name)
-//                        .substring(0, 100)
                     val googleCustomSearchData = GoogleCustomSearchApi.getResponse(
                         viewModel.itemUiState.name
                     )
@@ -94,12 +93,11 @@ fun ItemEntryScreen(
                     )
                     viewModel.saveItem()
                     Log.v(itemEntryScreenTAG, "Item saved")
-//                    navigateBack()
                 }
             },
             onOpenWebsite = {
                 val url = "https://www.playphrase.me/#/search?q=" + viewModel.itemUiState.name
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 context.startActivity(intent)
             },
             modifier = modifier.padding(innerPadding)

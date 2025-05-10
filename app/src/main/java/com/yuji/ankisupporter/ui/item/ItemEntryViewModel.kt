@@ -38,7 +38,7 @@ class ItemEntryViewModel(
         itemUiState = newItemUiState.copy( actionEnabled = newItemUiState.isValid())
     }
 
-    suspend fun saveItem() {
+    fun saveItem() {
         if (itemUiState.isValid()) {
             viewModelScope.launch {
                 val newItemId: Long = itemsRepository.insertItem(itemUiState.toItem())
