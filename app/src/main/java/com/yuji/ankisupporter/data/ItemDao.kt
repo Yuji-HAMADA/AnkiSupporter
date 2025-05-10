@@ -10,13 +10,13 @@ interface ItemDao {
     fun getAllItems(): Flow<List<Item>>
 
     @Query("SELECT * from item WHERE id = :id")
-    fun getItem(id: Int): Flow<Item>
+    fun getItem(id: Int): Flow<Item?>
 
     @Query("SELECT MAX(id) from item")
     fun getMaxId(): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(item: Item)
+    suspend fun insert(item: Item): Long
 
     @Update
     suspend fun update(item: Item)

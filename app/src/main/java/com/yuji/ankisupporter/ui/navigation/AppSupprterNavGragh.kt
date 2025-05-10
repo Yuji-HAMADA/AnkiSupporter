@@ -36,7 +36,10 @@ fun AnkiSupporterNavHost(
         composable(route = ItemEntryDestination.route) {
             ItemEntryScreen(
                 navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+                navigateToItemDetails = { itemId ->
+                    navController.navigate("${ItemDetailsDestination.route}/${itemId}")
+                }
             )
         }
 

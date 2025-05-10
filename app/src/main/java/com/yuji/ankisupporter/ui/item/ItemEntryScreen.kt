@@ -14,6 +14,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,16 +43,25 @@ object ItemEntryDestination : NavigationDestination {
 fun ItemEntryScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
+    navigateToItemDetails: (Int) -> Unit,
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean = true,
     viewModel: ItemEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
     val itemEntryScreenTAG = "ItemEntryScreen"
+    val savedItemId by viewModel.savedItemId.collectAsState()
 
     val context = LocalContext.current
 
     WordRecognizer.setItemEntryViewModel(viewModel)
+
+    LaunchedEffect(savedItemId) {
+        savedItemId?.let { itemId ->
+            navigateToItemDetails(itemId.toInt()) // Long -> Int に変換
+            viewModel.resetSavedItemId()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -65,17 +77,6 @@ fun ItemEntryScreen(
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
                 Log.v(itemEntryScreenTAG, "Save Start")
-                /*
-                Translator.englishJapaneseTranslator.translate(viewModel.itemUiState.name)
-                    .addOnSuccessListener { translatedText ->
-                        viewModel.updateUiState(viewModel.itemUiState.copy(meaning = translatedText))
-                        Log.v(itemEntryScreenTAG, viewModel.itemUiState.name)
-                        Log.v(itemEntryScreenTAG, viewModel.itemUiState.meaning)
-                        coroutineScope.launch {
-                            viewModel.saveItem()
-                        }
-                    }
-                */
 
                 coroutineScope.launch {
                     Log.v(itemEntryScreenTAG, "saving item...")
@@ -93,7 +94,7 @@ fun ItemEntryScreen(
                     )
                     viewModel.saveItem()
                     Log.v(itemEntryScreenTAG, "Item saved")
-                    navigateBack()
+//                    navigateBack()
                 }
             },
             onOpenWebsite = {
