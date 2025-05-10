@@ -2,7 +2,6 @@ package com.yuji.ankisupporter.ui.item
 
 import com.yuji.ankisupporter.network.WeblioApi
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
