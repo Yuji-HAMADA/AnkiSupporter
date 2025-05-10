@@ -91,8 +91,6 @@ private fun HomeBody(
             .padding(4.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-//        AnkiSupporterListHeader()
-//        Divider()
         if (homeUiState.itemList.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_item_description),
@@ -154,8 +152,8 @@ private fun AnkiSupporterItem(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.contentColorFor(Purple200),
-            contentColor = MaterialTheme.colorScheme.primary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)

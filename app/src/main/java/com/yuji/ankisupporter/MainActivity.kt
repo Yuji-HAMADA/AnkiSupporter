@@ -13,7 +13,13 @@ import androidx.compose.ui.Modifier
 import com.yuji.ankisupporter.ui.theme.AnkiSupporterTheme
 import com.yuji.ankisupporter.utility.WordManager
 import com.yuji.ankisupporter.utility.WordRecognizer
+import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * MainActivity is the main entry point of the application.
+ * It initializes the app and sets up the UI.
+ */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val _appTAG = "Main Activity"
