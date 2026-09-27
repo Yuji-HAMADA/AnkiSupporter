@@ -1,8 +1,0 @@
-buildscript {
-    ext {
-        compose_ui_version= '1.4.3'
-    }
-    repositories {
-        google()
-    }
-}
