@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -48,7 +50,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ankisupporter.model.AiProvider
@@ -62,6 +67,14 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    val triggerGenerate = {
+        keyboardController?.hide()
+        focusManager.clearFocus()
+        viewModel.generateSentence()
+    }
 
     Column(
         modifier = modifier
@@ -140,6 +153,14 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (!uiState.isLoading && uiState.inputText.isNotBlank()) {
+                                triggerGenerate()
+                            }
+                        }
+                    ),
                     trailingIcon = {
                         if (uiState.inputText.isNotEmpty()) {
                             IconButton(onClick = { viewModel.onInputTextChanged("") }) {
@@ -151,7 +172,7 @@ fun HomeScreen(
                 )
 
                 Button(
-                    onClick = viewModel::generateSentence,
+                    onClick = triggerGenerate,
                     enabled = !uiState.isLoading && uiState.inputText.isNotBlank(),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -386,4 +407,3 @@ fun GeneratedResultCard(
         }
     }
 }
-
