@@ -9,31 +9,28 @@ object AiPromptHelper {
         ignoreUnknownKeys = true
         isLenient = true
         coerceInputValues = true
+        encodeDefaults = true
     }
 
-    const val SYSTEM_PROMPT = """
-You are a helpful and expert English learning assistant.
-When the user gives you an English or Japanese word, phrase, or sentence, you must generate:
-1. The English word/phrase.
-2. IPA phonetic transcription (e.g. /ɪɡˈzæmpəl/).
-3. Accurate Japanese translation of the word.
-4. A natural, practical English example sentence using the word (B1-B2 level, useful for daily life or business).
-5. The Japanese translation of that example sentence.
-6. A concise learning tip, nuance, or collocation in Japanese.
+    /**
+     * あらゆるLLM（Ollama, Gemini等）で最も安定してJSONを出力させる統合プロンプト
+     */
+    fun buildCombinedPrompt(input: String): String {
+        return """
+You are an expert English learning assistant.
+Create an English study flashcard for the following word/text: "$input"
 
-You MUST respond strictly with a valid JSON object in the following format and NOTHING ELSE:
+You must reply with ONLY a single valid JSON object, without any introductory or concluding text.
+Format requirements:
 {
-  "word": "example",
-  "phonetic": "/ɪɡˈzæmpəl/",
-  "translation": "例、見本、手本",
-  "exampleSentence": "Can you give me an example of how this word is used?",
-  "exampleTranslation": "この単語がどのように使われるか例を挙げていただけますか？",
-  "explanation": "「give an example」などのコロケーションでよく使われます。"
+  "word": "The English word or phrase",
+  "phonetic": "IPA transcription, e.g. /æp.əl/",
+  "translation": "Accurate Japanese meaning",
+  "exampleSentence": "A natural, practical English example sentence",
+  "exampleTranslation": "Japanese translation of the example sentence",
+  "explanation": "Brief explanation of usage, collocation, or nuance in Japanese"
 }
-"""
-
-    fun buildUserPrompt(input: String): String {
-        return "Word or text to learn: $input"
+""".trimIndent()
     }
 
     /**
@@ -41,17 +38,17 @@ You MUST respond strictly with a valid JSON object in the following format and N
      */
     fun parseResponseToCard(rawText: String, fallbackWord: String): GeneratedCard {
         val trimmed = rawText.trim()
-        
-        // コードブロック ```json ... ``` の除去
+
+        // 1. ```json { ... } ``` の抽出
         val jsonPattern = Regex("""```(?:json)?\s*(\{[\s\S]*?\})\s*```""", RegexOption.DOT_MATCHES_ALL)
         val jsonMatch = jsonPattern.find(trimmed)
         val jsonCandidate = if (jsonMatch != null) {
             jsonMatch.groupValues[1]
         } else {
-            // 文字列内の最初と最後の波括弧を探す
+            // 2. 文字列内の最初と最後の波括弧を探す
             val firstBrace = trimmed.indexOf('{')
             val lastBrace = trimmed.lastIndexOf('}')
-            if (firstBrace != -1 && lastBrace != -1 && lastBrace > firstBrace) {
+            if (firstBrace != -1 && lastBrace != -1 && lastBrace < trimmed.length && lastBrace > firstBrace) {
                 trimmed.substring(firstBrace, lastBrace + 1)
             } else {
                 trimmed
@@ -59,18 +56,21 @@ You MUST respond strictly with a valid JSON object in the following format and N
         }
 
         return try {
-            jsonConfig.decodeFromString<GeneratedCard>(jsonCandidate)
+            val card = jsonConfig.decodeFromString<GeneratedCard>(jsonCandidate)
+            card.copy(
+                word = if (card.word.isNotBlank()) card.word else fallbackWord,
+                translation = if (card.translation.isNotBlank()) card.translation else fallbackWord
+            )
         } catch (e: Exception) {
-            // パース失敗時のフォールバック処理
+            // パース失敗時のフォールバックカード
             GeneratedCard(
                 word = fallbackWord,
                 phonetic = "",
-                translation = "（パースエラー: レスポンスをそのまま表示します）",
-                exampleSentence = rawText,
+                translation = "（返答のパースに失敗しました）",
+                exampleSentence = trimmed.take(200),
                 exampleTranslation = "",
-                explanation = "AIからの返答形式が不正でした: ${e.localizedMessage}"
+                explanation = "AI返答のJSON抽出に失敗しました: ${e.localizedMessage ?: "フォーマットエラー"}"
             )
         }
     }
 }
-

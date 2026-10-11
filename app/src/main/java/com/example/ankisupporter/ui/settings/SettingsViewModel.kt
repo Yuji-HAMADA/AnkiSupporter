@@ -14,10 +14,10 @@ import kotlinx.coroutines.launch
 
 data class SettingsUiState(
     val activeProvider: AiProvider = AiProvider.OLLAMA,
-    val ollamaHost: String = "http://10.0.2.2:11434",
-    val ollamaModel: String = "llama3.2",
-    val geminiApiKey: String = "",
-    val geminiModel: String = "gemini-1.5-flash",
+    val ollamaHost: String = "http://192.168.11.19:11434",
+    val ollamaModel: String = "gemma2:9b",
+    val geminiApiKey: String = com.example.ankisupporter.BuildConfig.DEFAULT_GEMINI_API_KEY,
+    val geminiModel: String = "gemini-3.1-flash-lite",
     val ttsSpeechRate: Float = 1.0f,
     val isTesting: Boolean = false,
     val testResult: String? = null,

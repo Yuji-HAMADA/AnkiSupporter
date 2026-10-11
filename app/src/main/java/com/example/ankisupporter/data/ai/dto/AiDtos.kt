@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 data class OpenAiChatRequest(
     val model: String,
     val messages: List<OpenAiMessage>,
-    val temperature: Float = 0.7f,
+    val temperature: Float = 0.3f,
     val stream: Boolean = false
 )
 
 @Serializable
 data class OpenAiMessage(
-    val role: String, // "system" or "user" or "assistant"
-    val content: String
+    val role: String? = null,
+    val content: String? = null
 )
 
 @Serializable
@@ -44,17 +44,18 @@ data class GeminiGenerateContentRequest(
 @Serializable
 data class GeminiContent(
     val role: String? = null,
-    val parts: List<GeminiPart>
+    val parts: List<GeminiPart> = emptyList()
 )
 
 @Serializable
 data class GeminiPart(
-    val text: String
+    val text: String? = null,
+    val thoughtSignature: String? = null
 )
 
 @Serializable
 data class GeminiGenerationConfig(
-    val temperature: Float = 0.7f,
+    val temperature: Float = 0.4f,
     val responseMimeType: String? = null
 )
 
@@ -66,7 +67,8 @@ data class GeminiGenerateContentResponse(
 
 @Serializable
 data class GeminiCandidate(
-    val content: GeminiContent? = null
+    val content: GeminiContent? = null,
+    val finishReason: String? = null
 )
 
 @Serializable
@@ -75,4 +77,3 @@ data class GeminiError(
     val message: String? = null,
     val status: String? = null
 )
-

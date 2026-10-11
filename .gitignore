@@ -19,5 +19,9 @@ captures/
 .externalNativeBuild/
 .cxx/
 
+# Keystore files
+*.jks
+*.keystore
+
 # Agent local log
 agent_execution_log.md

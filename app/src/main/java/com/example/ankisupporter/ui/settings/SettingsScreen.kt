@@ -255,11 +255,27 @@ fun SettingsScreen(
                     value = uiState.geminiModel,
                     onValueChange = viewModel::updateGeminiModel,
                     label = { Text("モデル名") },
-                    placeholder = { Text("gemini-1.5-flash または gemini-2.0-flash") },
+                    supportingText = { Text("無料枠で高速・安定動作する「gemini-3.1-flash-lite」を推奨\n（3.8-flashが1日20回上限に達した際は自動でフォールバックします）") },
+                    placeholder = { Text("例: gemini-3.1-flash-lite, gemini-3.8-flash") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true
                 )
+
+                // おすすめモデルのクイック選択
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    androidx.compose.material3.AssistChip(
+                        onClick = { viewModel.updateGeminiModel("gemini-3.1-flash-lite") },
+                        label = { Text("3.1-flash-lite (推奨・枠大)") }
+                    )
+                    androidx.compose.material3.AssistChip(
+                        onClick = { viewModel.updateGeminiModel("gemini-3.8-flash") },
+                        label = { Text("3.8-flash (思考モデル)") }
+                    )
+                }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

@@ -33,12 +33,19 @@ class AppPreferences(private val context: Context) {
             AiProvider.OLLAMA
         }
 
+        val storedApiKey = prefs[Keys.GEMINI_API_KEY]
+        val resolvedApiKey = if (storedApiKey.isNullOrBlank()) {
+            com.example.ankisupporter.BuildConfig.DEFAULT_GEMINI_API_KEY
+        } else {
+            storedApiKey
+        }
+
         AppSettings(
             activeProvider = provider,
-            ollamaHost = prefs[Keys.OLLAMA_HOST] ?: "http://10.0.2.2:11434",
-            ollamaModel = prefs[Keys.OLLAMA_MODEL] ?: "llama3.2",
-            geminiApiKey = prefs[Keys.GEMINI_API_KEY] ?: "",
-            geminiModel = prefs[Keys.GEMINI_MODEL] ?: "gemini-1.5-flash",
+            ollamaHost = prefs[Keys.OLLAMA_HOST] ?: "http://192.168.11.19:11434",
+            ollamaModel = prefs[Keys.OLLAMA_MODEL] ?: "gemma2:9b",
+            geminiApiKey = resolvedApiKey,
+            geminiModel = prefs[Keys.GEMINI_MODEL] ?: "gemini-3.1-flash-lite",
             ttsSpeechRate = prefs[Keys.TTS_RATE] ?: 1.0f
         )
     }

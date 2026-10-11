@@ -1,9 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+}
+
+// local.properties から認証情報を安全に読み込む（Gitにはコミットされない）
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
 android {
@@ -18,17 +27,37 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // local.properties に定義された GEMINI_API_KEY を BuildConfig に注入
+        val defaultGeminiApiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
+        buildConfigField("String", "DEFAULT_GEMINI_API_KEY", "\"$defaultGeminiApiKey\"")
+    }
+
+    signingConfigs {
+        create("release") {
+            val keystorePath = localProperties.getProperty("KEYSTORE_FILE_PATH") ?: "../release-key.jks"
+            val storePass = localProperties.getProperty("KEYSTORE_STORE_PASSWORD") ?: ""
+            val keyPass = localProperties.getProperty("KEYSTORE_KEY_PASSWORD") ?: storePass
+            val alias = localProperties.getProperty("KEYSTORE_KEY_ALIAS") ?: "my-release-key"
+
+            storeFile = file(keystorePath)
+            storePassword = storePass
+            keyAlias = alias
+            keyPassword = keyPass
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -38,6 +67,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -71,4 +101,3 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     debugImplementation(libs.androidx.ui.tooling)
 }
-
