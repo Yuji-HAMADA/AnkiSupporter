@@ -1,0 +1,23 @@
+*.iml
+.gradle/
+local.properties
+/local.properties
+
+.idea/
+/.idea/
+.vscode/
+/.vscode/
+.antigravity/
+/.antigravity/
+
+.DS_Store
+build/
+/build
+app/build/
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Agent local log
+agent_execution_log.md
