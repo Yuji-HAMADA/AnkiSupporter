@@ -70,6 +70,14 @@ class HomeViewModel(
                         generatedCard = card,
                         errorMessage = null
                     )
+                    // 検索履歴（最大100件）に自動記録
+                    viewModelScope.launch {
+                        try {
+                            wordRepository.recordSearchHistory(card)
+                        } catch (_: Exception) {
+                            // 履歴記録の失敗はUIエラーとして遮断しない
+                        }
+                    }
                 },
                 onFailure = { error ->
                     _uiState.value = _uiState.value.copy(
@@ -119,4 +127,3 @@ class HomeViewModel(
         _uiState.value = _uiState.value.copy(errorMessage = null, successMessage = null)
     }
 }
-
