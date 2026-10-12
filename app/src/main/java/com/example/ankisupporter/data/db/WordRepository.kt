@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface WordRepository {
     fun getAllWords(): Flow<List<WordEntity>>
+    suspend fun getAllWordsList(): List<WordEntity>
     fun getUnmemorizedWords(): Flow<List<WordEntity>>
     fun getMemorizedWords(): Flow<List<WordEntity>>
     fun searchWords(query: String): Flow<List<WordEntity>>
@@ -14,11 +15,14 @@ interface WordRepository {
     suspend fun deleteById(id: Long)
     suspend fun toggleMemorized(id: Long, isMemorized: Boolean)
     suspend fun recordReview(id: Long)
+    suspend fun importWords(words: List<WordEntity>): Int
 }
 
 class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
 
     override fun getAllWords(): Flow<List<WordEntity>> = wordDao.getAllWords()
+
+    override suspend fun getAllWordsList(): List<WordEntity> = wordDao.getAllWordsList()
 
     override fun getUnmemorizedWords(): Flow<List<WordEntity>> = wordDao.getUnmemorizedWords()
 
@@ -50,5 +54,20 @@ class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
     override suspend fun recordReview(id: Long) {
         wordDao.recordReview(id)
     }
-}
 
+    override suspend fun importWords(words: List<WordEntity>): Int {
+        if (words.isEmpty()) return 0
+
+        // 既存の同一単語を検索し、重複があれば既存IDで更新、新規ならID=0にして自動採番
+        val entitiesToSave = words.map { incoming ->
+            val existing = wordDao.findWordByText(incoming.word.trim())
+            if (existing != null) {
+                incoming.copy(id = existing.id)
+            } else {
+                incoming.copy(id = 0)
+            }
+        }
+        wordDao.insertWords(entitiesToSave)
+        return entitiesToSave.size
+    }
+}

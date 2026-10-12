@@ -17,6 +17,9 @@ interface WordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWord(word: WordEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertWords(words: List<WordEntity>): List<Long>
+
     @Update
     suspend fun updateWord(word: WordEntity)
 
@@ -28,6 +31,12 @@ interface WordDao {
 
     @Query("SELECT * FROM words ORDER BY createdAt DESC")
     fun getAllWords(): Flow<List<WordEntity>>
+
+    @Query("SELECT * FROM words ORDER BY createdAt DESC")
+    suspend fun getAllWordsList(): List<WordEntity>
+
+    @Query("SELECT * FROM words WHERE word = :word LIMIT 1")
+    suspend fun findWordByText(word: String): WordEntity?
 
     @Query("SELECT * FROM words WHERE isMemorized = 0 ORDER BY createdAt DESC")
     fun getUnmemorizedWords(): Flow<List<WordEntity>>
@@ -47,4 +56,3 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words")
     fun getWordCount(): Flow<Int>
 }
-

@@ -21,9 +21,11 @@ Anki Supporter is an Android application built with Jetpack Compose designed to 
 - **Text-to-Speech (TTS)**:
   - Pronounce words and generated example sentences with standard US English TTS.
   - Configurable speech rate.
-- **Local Vocabulary Storage**:
+- **Local Vocabulary Storage & Data Backup**:
   - Save generated cards directly into an offline Room SQLite database.
   - Review, search, mark words as memorized/unmemorized, and track review counts.
+  - **Export (JSON)**: Export all vocabulary data and trigger Android's share sheet (`Intent.ACTION_SEND` via `FileProvider`) to save to Google Drive, Gmail, or local storage.
+  - **Import (JSON)**: Restore vocabulary data from JSON backup files using the system document picker (`ActivityResultContracts.OpenDocument`).
 - **Polished Compose UI**:
   - Clean Material 3 design with loading indicators and provider indicators.
   - Automatic software keyboard dismissal and focus clearing upon generation to maximize screen visibility.

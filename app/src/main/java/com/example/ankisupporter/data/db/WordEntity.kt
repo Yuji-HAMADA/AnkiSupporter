@@ -3,10 +3,12 @@ package com.example.ankisupporter.data.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.ankisupporter.model.GeneratedCard
+import kotlinx.serialization.Serializable
 
 /**
  * 暗記・復習用の単語帳エンティティ
  */
+@Serializable
 @Entity(tableName = "words")
 data class WordEntity(
     @PrimaryKey(autoGenerate = true)
@@ -46,4 +48,3 @@ data class WordEntity(
         }
     }
 }
-
