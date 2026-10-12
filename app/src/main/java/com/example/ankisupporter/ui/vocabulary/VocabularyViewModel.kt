@@ -9,6 +9,7 @@ import com.example.ankisupporter.data.db.WordEntity
 import com.example.ankisupporter.data.db.WordRepository
 import com.example.ankisupporter.speech.TextToSpeechManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -62,14 +63,13 @@ class VocabularyViewModel(
     private val _userMessage = MutableSharedFlow<String>()
     val userMessage: SharedFlow<String> = _userMessage.asSharedFlow()
 
-    val uiState: StateFlow<VocabularyUiState> = combine(
+    private val wordsFlow: Flow<Triple<VocabularyTab, List<WordEntity>, VocabFilter>> = combine(
         _selectedTab,
         wordRepository.getSavedWords(),
         wordRepository.getSearchHistory(100),
         _filter,
-        _searchQuery,
-        _isOperating
-    ) { tab, savedWords, historyWords, filter, query, isOperating ->
+        _searchQuery
+    ) { tab, savedWords, historyWords, filter, query ->
         val sourceList = if (tab == VocabularyTab.SAVED) savedWords else historyWords
 
         val filtered = sourceList.filter { word ->
@@ -89,10 +89,17 @@ class VocabularyViewModel(
             }
             matchesFilter && matchesQuery
         }
+        Triple(tab, filtered, filter)
+    }
 
+    val uiState: StateFlow<VocabularyUiState> = combine(
+        wordsFlow,
+        _searchQuery,
+        _isOperating
+    ) { (tab, filteredWords, filter), query, isOperating ->
         VocabularyUiState(
             selectedTab = tab,
-            words = filtered,
+            words = filteredWords,
             filter = filter,
             searchQuery = query,
             isOperating = isOperating
