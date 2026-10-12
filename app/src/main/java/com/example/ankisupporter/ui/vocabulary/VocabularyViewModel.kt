@@ -26,11 +26,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+enum class VocabularyTab {
+    SAVED,    // マイ単語帳
+    HISTORY   // 検索履歴（最大100件）
+}
+
 enum class VocabFilter {
     ALL, UNMEMORIZED, MEMORIZED
 }
 
 data class VocabularyUiState(
+    val selectedTab: VocabularyTab = VocabularyTab.SAVED,
     val words: List<WordEntity> = emptyList(),
     val filter: VocabFilter = VocabFilter.ALL,
     val searchQuery: String = "",
@@ -48,6 +54,7 @@ class VocabularyViewModel(
         encodeDefaults = true
     }
 
+    private val _selectedTab = MutableStateFlow(VocabularyTab.SAVED)
     private val _filter = MutableStateFlow(VocabFilter.ALL)
     private val _searchQuery = MutableStateFlow("")
     private val _isOperating = MutableStateFlow(false)
@@ -56,16 +63,24 @@ class VocabularyViewModel(
     val userMessage: SharedFlow<String> = _userMessage.asSharedFlow()
 
     val uiState: StateFlow<VocabularyUiState> = combine(
-        wordRepository.getAllWords(),
+        _selectedTab,
+        wordRepository.getSavedWords(),
+        wordRepository.getSearchHistory(100),
         _filter,
         _searchQuery,
         _isOperating
-    ) { allWords, filter, query, isOperating ->
-        val filtered = allWords.filter { word ->
-            val matchesFilter = when (filter) {
-                VocabFilter.ALL -> true
-                VocabFilter.UNMEMORIZED -> !word.isMemorized
-                VocabFilter.MEMORIZED -> word.isMemorized
+    ) { tab, savedWords, historyWords, filter, query, isOperating ->
+        val sourceList = if (tab == VocabularyTab.SAVED) savedWords else historyWords
+
+        val filtered = sourceList.filter { word ->
+            val matchesFilter = if (tab == VocabularyTab.HISTORY) {
+                true
+            } else {
+                when (filter) {
+                    VocabFilter.ALL -> true
+                    VocabFilter.UNMEMORIZED -> !word.isMemorized
+                    VocabFilter.MEMORIZED -> word.isMemorized
+                }
             }
             val matchesQuery = if (query.isBlank()) true else {
                 word.word.contains(query, ignoreCase = true) ||
@@ -74,7 +89,9 @@ class VocabularyViewModel(
             }
             matchesFilter && matchesQuery
         }
+
         VocabularyUiState(
+            selectedTab = tab,
             words = filtered,
             filter = filter,
             searchQuery = query,
@@ -85,6 +102,10 @@ class VocabularyViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = VocabularyUiState()
     )
+
+    fun selectTab(tab: VocabularyTab) {
+        _selectedTab.value = tab
+    }
 
     fun setFilter(filter: VocabFilter) {
         _filter.value = filter
@@ -97,6 +118,20 @@ class VocabularyViewModel(
     fun toggleMemorized(word: WordEntity) {
         viewModelScope.launch {
             wordRepository.toggleMemorized(word.id, !word.isMemorized)
+        }
+    }
+
+    fun promoteToSaved(word: WordEntity) {
+        viewModelScope.launch {
+            wordRepository.promoteToSaved(word.id)
+            _userMessage.emit("「${word.word}」をマイ単語帳に追加しました")
+        }
+    }
+
+    fun removeFromSaved(word: WordEntity) {
+        viewModelScope.launch {
+            wordRepository.removeFromSaved(word.id)
+            _userMessage.emit("「${word.word}」をマイ単語帳から解除しました")
         }
     }
 

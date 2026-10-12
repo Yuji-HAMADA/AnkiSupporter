@@ -6,7 +6,7 @@ import com.example.ankisupporter.model.GeneratedCard
 import kotlinx.serialization.Serializable
 
 /**
- * 暗記・復習用の単語帳エンティティ
+ * 暗記・復習・検索履歴用の単語帳エンティティ
  */
 @Serializable
 @Entity(tableName = "words")
@@ -21,6 +21,9 @@ data class WordEntity(
     val explanation: String = "",
     val isMemorized: Boolean = false,
     val reviewCount: Int = 0,
+    val isSaved: Boolean = false,
+    val searchedAt: Long = System.currentTimeMillis(),
+    val savedAt: Long = 0L,
     val createdAt: Long = System.currentTimeMillis(),
     val lastReviewedAt: Long = 0L
 ) {
@@ -36,15 +39,28 @@ data class WordEntity(
     }
 
     companion object {
-        fun fromGeneratedCard(card: GeneratedCard): WordEntity {
+        fun fromGeneratedCard(card: GeneratedCard, isSaved: Boolean = false): WordEntity {
+            val now = System.currentTimeMillis()
             return WordEntity(
                 word = card.word,
                 phonetic = card.phonetic,
                 translation = card.translation,
                 exampleSentence = card.exampleSentence,
                 exampleTranslation = card.exampleTranslation,
-                explanation = card.explanation
+                explanation = card.explanation,
+                isSaved = isSaved,
+                searchedAt = now,
+                savedAt = if (isSaved) now else 0L,
+                createdAt = now
             )
+        }
+
+        fun createAsHistory(card: GeneratedCard): WordEntity {
+            return fromGeneratedCard(card, isSaved = false)
+        }
+
+        fun createAsSaved(card: GeneratedCard): WordEntity {
+            return fromGeneratedCard(card, isSaved = true)
         }
     }
 }

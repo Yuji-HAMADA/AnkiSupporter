@@ -6,10 +6,15 @@ import kotlinx.coroutines.flow.Flow
 interface WordRepository {
     fun getAllWords(): Flow<List<WordEntity>>
     suspend fun getAllWordsList(): List<WordEntity>
-    fun getUnmemorizedWords(): Flow<List<WordEntity>>
-    fun getMemorizedWords(): Flow<List<WordEntity>>
-    fun searchWords(query: String): Flow<List<WordEntity>>
+    fun getSavedWords(): Flow<List<WordEntity>>
+    fun getSearchHistory(limit: Int = 100): Flow<List<WordEntity>>
+    fun getUnmemorizedSavedWords(): Flow<List<WordEntity>>
+    fun getMemorizedSavedWords(): Flow<List<WordEntity>>
+    fun searchSavedWords(query: String): Flow<List<WordEntity>>
     suspend fun saveCard(card: GeneratedCard): Long
+    suspend fun recordSearchHistory(card: GeneratedCard): Long
+    suspend fun promoteToSaved(id: Long)
+    suspend fun removeFromSaved(id: Long)
     suspend fun updateWord(word: WordEntity)
     suspend fun deleteWord(word: WordEntity)
     suspend fun deleteById(id: Long)
@@ -24,15 +29,49 @@ class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
 
     override suspend fun getAllWordsList(): List<WordEntity> = wordDao.getAllWordsList()
 
-    override fun getUnmemorizedWords(): Flow<List<WordEntity>> = wordDao.getUnmemorizedWords()
+    override fun getSavedWords(): Flow<List<WordEntity>> = wordDao.getSavedWords()
 
-    override fun getMemorizedWords(): Flow<List<WordEntity>> = wordDao.getMemorizedWords()
+    override fun getSearchHistory(limit: Int): Flow<List<WordEntity>> = wordDao.getSearchHistory(limit)
 
-    override fun searchWords(query: String): Flow<List<WordEntity>> = wordDao.searchWords(query)
+    override fun getUnmemorizedSavedWords(): Flow<List<WordEntity>> = wordDao.getUnmemorizedSavedWords()
+
+    override fun getMemorizedSavedWords(): Flow<List<WordEntity>> = wordDao.getMemorizedSavedWords()
+
+    override fun searchSavedWords(query: String): Flow<List<WordEntity>> = wordDao.searchSavedWords(query)
 
     override suspend fun saveCard(card: GeneratedCard): Long {
-        val entity = WordEntity.fromGeneratedCard(card)
-        return wordDao.insertWord(entity)
+        val existing = wordDao.findWordByText(card.word.trim())
+        val now = System.currentTimeMillis()
+        return if (existing != null) {
+            val updated = existing.copy(
+                phonetic = card.phonetic,
+                translation = card.translation,
+                exampleSentence = card.exampleSentence,
+                exampleTranslation = card.exampleTranslation,
+                explanation = card.explanation,
+                isSaved = true,
+                savedAt = now,
+                searchedAt = now
+            )
+            wordDao.updateWord(updated)
+            existing.id
+        } else {
+            val newEntity = WordEntity.createAsSaved(card)
+            wordDao.insertWord(newEntity)
+        }
+    }
+
+    override suspend fun recordSearchHistory(card: GeneratedCard): Long {
+        val entity = WordEntity.createAsHistory(card)
+        return wordDao.upsertHistoryAndTrim(entity, historyLimit = 100)
+    }
+
+    override suspend fun promoteToSaved(id: Long) {
+        wordDao.markAsSaved(id, System.currentTimeMillis())
+    }
+
+    override suspend fun removeFromSaved(id: Long) {
+        wordDao.unmarkAsSaved(id)
     }
 
     override suspend fun updateWord(word: WordEntity) {
@@ -58,16 +97,20 @@ class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
     override suspend fun importWords(words: List<WordEntity>): Int {
         if (words.isEmpty()) return 0
 
-        // 既存の同一単語を検索し、重複があれば既存IDで更新、新規ならID=0にして自動採番
         val entitiesToSave = words.map { incoming ->
             val existing = wordDao.findWordByText(incoming.word.trim())
             if (existing != null) {
-                incoming.copy(id = existing.id)
+                incoming.copy(
+                    id = existing.id,
+                    isSaved = incoming.isSaved || existing.isSaved,
+                    savedAt = if (incoming.isSaved || existing.isSaved) maxOf(incoming.savedAt, existing.savedAt, System.currentTimeMillis()) else 0L
+                )
             } else {
                 incoming.copy(id = 0)
             }
         }
         wordDao.insertWords(entitiesToSave)
+        wordDao.trimUnsavedHistory(100)
         return entitiesToSave.size
     }
 }
