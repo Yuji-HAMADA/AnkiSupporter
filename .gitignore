@@ -25,3 +25,7 @@ captures/
 
 # Agent local log
 agent_execution_log.md
+.aider*
+
+# Environment Variables
+.env
