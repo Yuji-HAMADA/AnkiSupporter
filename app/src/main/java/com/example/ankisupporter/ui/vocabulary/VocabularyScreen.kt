@@ -31,6 +31,8 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -270,7 +272,10 @@ fun VocabularyScreen(
                         onToggleMemorized = { viewModel.toggleMemorized(word) },
                         onDelete = { viewModel.deleteWord(word) },
                         onSpeakWord = { viewModel.speakWord(word.word) },
-                        onSpeakSentence = { viewModel.speakSentence(word.exampleSentence) }
+                        onSpeakSentence = { viewModel.speakSentence(word.exampleSentence) },
+                        onSearchSynonym = { synonym ->
+                            viewModel.setSearchQuery(synonym)
+                        }
                     )
                 }
             }
@@ -287,6 +292,7 @@ fun WordItemCard(
     onDelete: () -> Unit,
     onSpeakWord: () -> Unit,
     onSpeakSentence: () -> Unit,
+    onSearchSynonym: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -414,6 +420,32 @@ fun WordItemCard(
                                 modifier = Modifier.size(18.dp)
                             )
                         }
+                    }
+                }
+            }
+
+            // 類語チップの表示
+            if (word.synonyms.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "類語:",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                    word.synonyms.take(3).forEach { synonym ->
+                        AssistChip(
+                            onClick = { onSearchSynonym(synonym) },
+                            label = { Text(synonym, fontSize = 11.sp) },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.height(28.dp)
+                        )
                     }
                 }
             }

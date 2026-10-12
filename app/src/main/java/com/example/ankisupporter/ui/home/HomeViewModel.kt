@@ -11,7 +11,6 @@ import com.example.ankisupporter.speech.TextToSpeechManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
@@ -45,6 +44,11 @@ class HomeViewModel(
 
     fun onInputTextChanged(text: String) {
         _uiState.value = _uiState.value.copy(inputText = text, errorMessage = null)
+    }
+
+    fun searchWord(keyword: String) {
+        onInputTextChanged(keyword)
+        generateSentence()
     }
 
     fun generateSentence() {

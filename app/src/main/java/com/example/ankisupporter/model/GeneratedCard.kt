@@ -12,6 +12,6 @@ data class GeneratedCard(
     val translation: String,
     val exampleSentence: String,
     val exampleTranslation: String,
-    val explanation: String = ""
+    val explanation: String = "",
+    val synonyms: List<String> = emptyList()
 )
-

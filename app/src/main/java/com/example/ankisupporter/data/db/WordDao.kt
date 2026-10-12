@@ -100,6 +100,7 @@ interface WordDao {
                 exampleSentence = word.exampleSentence.ifBlank { existing.exampleSentence },
                 exampleTranslation = word.exampleTranslation.ifBlank { existing.exampleTranslation },
                 explanation = word.explanation.ifBlank { existing.explanation },
+                synonyms = if (word.synonyms.isNotEmpty()) word.synonyms else existing.synonyms,
                 searchedAt = System.currentTimeMillis()
             )
             updateWord(updated)

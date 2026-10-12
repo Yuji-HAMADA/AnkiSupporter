@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,8 +27,11 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -74,6 +76,12 @@ fun HomeScreen(
         keyboardController?.hide()
         focusManager.clearFocus()
         viewModel.generateSentence()
+    }
+
+    val onSelectSynonym: (String) -> Unit = { synonym ->
+        keyboardController?.hide()
+        focusManager.clearFocus()
+        viewModel.searchWord(synonym)
     }
 
     Column(
@@ -246,7 +254,8 @@ fun HomeScreen(
                     isSaved = uiState.isSaved,
                     onSpeakWord = viewModel::speakWord,
                     onSpeakSentence = viewModel::speakSentence,
-                    onSave = viewModel::saveToVocabulary
+                    onSave = viewModel::saveToVocabulary,
+                    onSelectSynonym = onSelectSynonym
                 )
             }
         }
@@ -260,6 +269,7 @@ fun GeneratedResultCard(
     onSpeakWord: () -> Unit,
     onSpeakSentence: () -> Unit,
     onSave: () -> Unit,
+    onSelectSynonym: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -381,6 +391,61 @@ fun GeneratedResultCard(
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF92400E)
                     )
+                }
+            }
+
+            // 日本の大学受験レベルの類語3選セクション
+            if (card.synonyms.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "大学受験レベルの類語（タップで検索）",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        card.synonyms.take(3).forEach { synonym ->
+                            AssistChip(
+                                onClick = { onSelectSynonym(synonym) },
+                                label = {
+                                    Text(
+                                        text = synonym,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 13.sp
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        }
+                    }
                 }
             }
 

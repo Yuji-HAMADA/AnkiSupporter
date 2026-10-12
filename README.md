@@ -14,6 +14,7 @@ Anki Supporter is an Android application built with Jetpack Compose designed to 
     - Natural English example sentence
     - Japanese translation of the example sentence
     - Nuance and usage explanation
+    - **3 Japanese University Entrance Exam Level Synonyms (CEFR B1-B2)**: Curated synonyms rendered as interactive chips that trigger one-tap re-generation.
 - **Dual AI Provider Support**:
   - **Local LLM (Ollama)**: Run models locally (e.g., `llama3.2`, `gemma2:9b`) via Ollama's OpenAI-compatible endpoint (`/v1/chat/completions`). No external API keys required.
   - **Cloud AI (Google Gemini)**: Use Google AI Studio models (e.g., `gemini-3.1-flash-lite`, `gemini-1.5-flash`) with your API key.
@@ -21,10 +22,11 @@ Anki Supporter is an Android application built with Jetpack Compose designed to 
 - **Text-to-Speech (TTS)**:
   - Pronounce words and generated example sentences with standard US English TTS.
   - Configurable speech rate.
-- **Local Vocabulary Storage & Data Backup**:
-  - Save generated cards directly into an offline Room SQLite database.
-  - Review, search, mark words as memorized/unmemorized, and track review counts.
-  - **Export (JSON)**: Export all vocabulary data and trigger Android's share sheet (`Intent.ACTION_SEND` via `FileProvider`) to save to Google Drive, Gmail, or local storage.
+- **Local Vocabulary Storage & Search History**:
+  - **My Vocabulary (マイ単語帳)**: Explicitly saved flashcards with memorized/unmemorized tracking.
+  - **Search History (検索履歴 - Recent 100)**: Automatically records generated cards with automatic trimming of the oldest unsaved cards beyond 100 entries. Saved words are protected from trimming.
+  - **One-Tap Promotion**: Easily promote any card from search history to My Vocabulary.
+  - **Export (JSON)**: Export vocabulary data and trigger Android's share sheet (`Intent.ACTION_SEND` via `FileProvider`) to save to Google Drive, Gmail, or local storage.
   - **Import (JSON)**: Restore vocabulary data from JSON backup files using the system document picker (`ActivityResultContracts.OpenDocument`).
 - **Polished Compose UI**:
   - Clean Material 3 design with loading indicators and provider indicators.

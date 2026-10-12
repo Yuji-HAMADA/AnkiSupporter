@@ -17,8 +17,10 @@ object AiPromptHelper {
      */
     fun buildCombinedPrompt(input: String): String {
         return """
-You are an expert English learning assistant.
+You are an expert English learning assistant specializing in Japanese university entrance examinations.
 Create an English study flashcard for the following word/text: "$input"
+
+Provide exactly 3 English synonyms or closely related words suitable for Japanese university entrance examination level (standard to difficult university exams, approximately CEFR B1-B2 level).
 
 You must reply with ONLY a single valid JSON object, without any introductory or concluding text.
 Format requirements:
@@ -28,7 +30,8 @@ Format requirements:
   "translation": "Accurate Japanese meaning",
   "exampleSentence": "A natural, practical English example sentence",
   "exampleTranslation": "Japanese translation of the example sentence",
-  "explanation": "Brief explanation of usage, collocation, or nuance in Japanese"
+  "explanation": "Brief explanation of usage, collocation, or nuance in Japanese",
+  "synonyms": ["synonym1", "synonym2", "synonym3"]
 }
 """.trimIndent()
     }
@@ -59,7 +62,8 @@ Format requirements:
             val card = jsonConfig.decodeFromString<GeneratedCard>(jsonCandidate)
             card.copy(
                 word = if (card.word.isNotBlank()) card.word else fallbackWord,
-                translation = if (card.translation.isNotBlank()) card.translation else fallbackWord
+                translation = if (card.translation.isNotBlank()) card.translation else fallbackWord,
+                synonyms = card.synonyms.filter { it.isNotBlank() }
             )
         } catch (e: Exception) {
             // パース失敗時のフォールバックカード
@@ -69,7 +73,8 @@ Format requirements:
                 translation = "（返答のパースに失敗しました）",
                 exampleSentence = trimmed.take(200),
                 exampleTranslation = "",
-                explanation = "AI返答のJSON抽出に失敗しました: ${e.localizedMessage ?: "フォーマットエラー"}"
+                explanation = "AI返答のJSON抽出に失敗しました: ${e.localizedMessage ?: "フォーマットエラー"}",
+                synonyms = emptyList()
             )
         }
     }

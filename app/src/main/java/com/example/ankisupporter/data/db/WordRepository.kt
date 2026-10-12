@@ -49,6 +49,7 @@ class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
                 exampleSentence = card.exampleSentence,
                 exampleTranslation = card.exampleTranslation,
                 explanation = card.explanation,
+                synonyms = if (card.synonyms.isNotEmpty()) card.synonyms else existing.synonyms,
                 isSaved = true,
                 savedAt = now,
                 searchedAt = now
@@ -103,7 +104,8 @@ class WordRepositoryImpl(private val wordDao: WordDao) : WordRepository {
                 incoming.copy(
                     id = existing.id,
                     isSaved = incoming.isSaved || existing.isSaved,
-                    savedAt = if (incoming.isSaved || existing.isSaved) maxOf(incoming.savedAt, existing.savedAt, System.currentTimeMillis()) else 0L
+                    savedAt = if (incoming.isSaved || existing.isSaved) maxOf(incoming.savedAt, existing.savedAt, System.currentTimeMillis()) else 0L,
+                    synonyms = if (incoming.synonyms.isNotEmpty()) incoming.synonyms else existing.synonyms
                 )
             } else {
                 incoming.copy(id = 0)

@@ -19,6 +19,7 @@ data class WordEntity(
     val exampleSentence: String,
     val exampleTranslation: String,
     val explanation: String = "",
+    val synonyms: List<String> = emptyList(),
     val isMemorized: Boolean = false,
     val reviewCount: Int = 0,
     val isSaved: Boolean = false,
@@ -34,7 +35,8 @@ data class WordEntity(
             translation = translation,
             exampleSentence = exampleSentence,
             exampleTranslation = exampleTranslation,
-            explanation = explanation
+            explanation = explanation,
+            synonyms = synonyms
         )
     }
 
@@ -48,6 +50,7 @@ data class WordEntity(
                 exampleSentence = card.exampleSentence,
                 exampleTranslation = card.exampleTranslation,
                 explanation = card.explanation,
+                synonyms = card.synonyms,
                 isSaved = isSaved,
                 searchedAt = now,
                 savedAt = if (isSaved) now else 0L,
